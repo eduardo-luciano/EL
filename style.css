@@ -24,5 +24,5 @@ h1,h2,h3{margin:0}
 .produto img{width:100%;border-radius:8px}
 .preco{color:var(--accent);font-weight:bold;margin-top:6px}
 .muted{color:#9aa4b2}
-.footer{margin-top:24px;text-align:center;color:#97a1ac;font-size:13px}
+.footer{margin-top:10px;text-align:center;color:#97a1ac;font-size:13px}
 @media (max-width:900px){ .container{padding:14px} }
