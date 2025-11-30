@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loja - EL Serviços Técnicos</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <header style="display:flex;justify-content:space-between;align-items:center">
+    <div class="brand"><img src="logo.png" alt="logo"><div style="margin-left:10px"><h2>Loja</h2><div class="muted">Compre online</div></div></div>
+    <div><a href="vitrine.html" class="btn btn-ghost">Vitrine</a> <a href="gestao.html" class="btn btn-ghost">Admin</a></div>
+  </header>
+
+  <main style="margin-top:18px">
+    <div style="display:flex;gap:20px;align-items:flex-start">
+      <div style="flex:1">
+        <div id="produtos" class="grid"></div>
+      </div>
+      <aside style="width:360px">
+        <div class="card">
+          <h3>Carrinho</h3>
+          <div id="cartList" style="min-height:80px"></div>
+          <div style="margin-top:12px"><strong>Total: <span id="cartTotal">0 Kz</span></strong></div>
+          <hr style="margin:12px 0">
+          <h3>Pagamento por Transferência (IBAN)</h3>
+          <p><strong>Banco:</strong> BAI<br><strong>IBAN:</strong> <code id="iban">AO06 0040 0000 1234 5678 9101 2</code><br><strong>Titular:</strong> EL Serviços Técnicos</p>
+          <button class="btn btn-ghost" onclick="copyIban()">Copiar IBAN</button>
+          <p style="margin-top:8px">Depois da transferência, faça upload do comprovativo:</p>
+          <input type="file" id="comprovativo" accept="image/*,application/pdf">
+          <button class="btn" onclick="enviarComprovativo()" style="margin-top:8px">Enviar comprovativo</button>
+          <hr style="margin:12px 0">
+          <div id="paypal-button-container"></div>
+          <div style="margin-top:10px"><button class="btn btn-ghost" onclick="stripePlaceholder()">Pagar com Stripe (placeholder)</button></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div class="footer">EL Serviços Técnicos — Loja</div>
+</div>
+
+<script src="db.js"></script>
+<script src="app.js"></script>
+<script>
+let cart = [];
+function addToCart(id){
+  const p = DB.find(id);
+  if(!p) return;
+  const item = cart.find(x=>x.id===id);
+  if(item){ item.qty++; } else { cart.push({id:p.id,name:p.name,price:p.price,qty:1}); }
+  renderCart(); renderProducts();
+}
+function renderProducts(){
+  const el = document.getElementById('produtos');
+  const arr = DB.all();
+  el.innerHTML = arr.map(p=>`<div class="produto card"><img src="https://via.placeholder.com/320x180?text=${encodeURIComponent(p.name)}"><h3>${p.name}</h3><div class="preco">${formatKz(p.price)}</div><div style="margin-top:8px"><button class="btn" onclick="addToCart('${p.id}')">Adicionar ao carrinho</button></div></div>`).join('');
+}
+function renderCart(){
+  const el = document.getElementById('cartList');
+  if(cart.length===0){ el.innerHTML='<div class="muted">Carrinho vazio</div>'; document.getElementById('cartTotal').textContent=formatKz(0); return; }
+  el.innerHTML = cart.map(i=>`<div style="display:flex;justify-content:space-between;padding:6px 0"><div>${i.name} x${i.qty}</div><div>${formatKz(i.price*i.qty)}</div></div>`).join('');
+  const total = cart.reduce((s,i)=>s + i.price*i.qty,0);
+  document.getElementById('cartTotal').textContent = formatKz(total);
+}
+function copyIban(){ navigator.clipboard.writeText(document.getElementById('iban').textContent).then(()=>alert('IBAN copiado')); }
+function enviarComprovativo(){ const f=document.getElementById('comprovativo').files[0]; if(!f){ alert('Escolha um ficheiro'); return; } alert('Comprovativo recebido (simulado). Obrigado!'); cart=[]; renderCart(); }
+
+function stripePlaceholder(){ alert('Stripe requer configuração servidor. Veja README para integrar.'); }
+
+renderProducts();
+renderCart();
+
+// PayPal sandbox
+function loadPayPal(){
+  if(window.paypal){
+    paypal.Buttons({
+      createOrder: function(data, actions) {
+        const total = cart.reduce((s,i)=>s + i.price*i.qty,0);
+        return actions.order.create({ purchase_units: [{ amount: { value: (total/1000).toFixed(2) } }] });
+      },
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details){
+          alert('Pagamento (sandbox) concluído. Obrigado!'); cart=[]; renderCart();
+        });
+      }
+    }).render('#paypal-button-container');
+  } else { setTimeout(loadPayPal, 500); }
+}
+const s = document.createElement('script');
+s.src = "https://www.paypal.com/sdk/js?client-id=test&currency=USD";
+s.onload = loadPayPal;
+document.head.appendChild(s);
+</script>
+</body>
+</html>

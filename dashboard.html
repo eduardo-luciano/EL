@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard - EL Serviços Técnicos</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+<header style="display:flex;justify-content:space-between;align-items:center">
+  <div class="brand"><img src="logo.png" alt="logo" style="width:56px;height:56px;border-radius:8px"><div style="margin-left:10px"><h2>Dashboard</h2><div class="muted">Visão geral</div></div></div>
+  <div><a href="gestao.html" class="btn btn-ghost">Gestão</a> <a href="vendas.html" class="btn">Loja</a></div>
+</header>
+
+<main style="margin-top:18px">
+  <div class="grid">
+    <div class="card"><h3>Vendas (exemplo)</h3><canvas id="salesChart"></canvas></div>
+    <div class="card"><h3>Stock por Categoria</h3><canvas id="stockChart"></canvas></div>
+    <div class="card"><h3>Top Produtos</h3><canvas id="topChart"></canvas></div>
+  </div>
+</main>
+<div class="footer">EL Serviços Técnicos — Dashboard</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="db.js"></script>
+<script>
+function getMonthlySalesMock(){ return {labels:['Jan','Feb','Mar','Apr','May','Jun'], data:[120000,90000,150000,80000,110000,130000]}; }
+function getStockByCategory(){ const arr = DB.all(); const map = {}; arr.forEach(p=>{ const c=p.category||'Sem Categoria'; map[c]=(map[c]||0)+Number(p.quantity||0); }); return {labels:Object.keys(map), data:Object.values(map)}; }
+function getTopProducts(){ const arr = DB.all().slice(0,6); return {labels:arr.map(x=>x.name), data:arr.map(x=>Number(x.quantity||0))}; }
+
+const sales = getMonthlySalesMock();
+const ctx = document.getElementById('salesChart').getContext('2d');
+new Chart(ctx,{type:'line',data:{labels:sales.labels,datasets:[{label:'Vendas (Kz)',data:sales.data,borderColor:'#e53935',backgroundColor:'rgba(229,57,53,0.1)'}]}});
+
+const stock = getStockByCategory();
+new Chart(document.getElementById('stockChart').getContext('2d'),{type:'bar',data:{labels:stock.labels,datasets:[{label:'Stock',data:stock.data,backgroundColor:'#4f46e5'}]}});
+
+const top = getTopProducts();
+new Chart(document.getElementById('topChart').getContext('2d'),{type:'pie',data:{labels:top.labels,datasets:[{data:top.data}]}});
+
+</script>
+</body>
+</html>
