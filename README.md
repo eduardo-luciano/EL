@@ -11,8 +11,4 @@ Arquivos principais:
 - style.css, manifest.json, sw.js: UI e PWA
 - README: instruções
 
-Nota de segurança: projeto é protótipo totalmente client-side. Para produção implemente backend seguro para auth, storage de imagens e pagamentos.
 
-
-Realtime chat: current prototype uses localStorage polling. For real-time, integrate Firebase Realtime Database or Firestore and update chat.html accordingly.
-Deployment: host files on static hosting (Netlify, GitHub Pages) to enable PWA and SW.
