@@ -4,7 +4,7 @@ class ProductDB {
   _seed(){
     if(!localStorage.getItem(this.key)){
       const sample=[
-        {id:this._id(), name:'Soft de Loja', code:'001', category:'Programa de Gestão', quantity:100, price:10000, reorder:5, notes:'Um software de faturação é uma ferramenta digital que automatiza a gestão comercial e financeira de uma empresa. Permite emitir faturas, recibos e outros documentos legais de forma rápida e segura, garantindo o cumprimento das obrigações fiscais e a organização do inventário e de clientes.', image:null},
+        {id:this._id(), name:'Soft de Loja', code:'001', category:'Programa de Gestão', quantity:100, price:10000, reorder:5, notes:'Um software de faturação é uma ferramenta digital que automatiza a gestão comercial e financeira de uma empresa. Permite emitir faturas, recibos e outros documentos legais de forma rápida e segura, garantindo o cumprimento das obrigações fiscais e a organização do inventário e de clientes.', image:SoftdeLoja.jpg},
         {id:this._id(), name:'Teclado USB', code:'TEC002', category:'Periféricos', quantity:8, price:7500, reorder:3, notes:'USB 2.0', image:null}
       ];
       localStorage.setItem(this.key, JSON.stringify(sample));
