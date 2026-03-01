@@ -15,7 +15,7 @@
 .form-row{display:flex;gap:8px;flex-wrap:wrap}
 .input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
 .small{font-size:13px;color:var(--muted)}
-.footer{text-align:center;color:var(--muted);padding:18px}
+.footer{text-align:center;height:100px; color:var(--muted);padding:18px}
 .table{width:100%;border-collapse:collapse}
 .table th,.table td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.03);text-align:left}
 .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;align-items:center;justify-content:center;padding:24px}
